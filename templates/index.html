@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plant Disease Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function chooseFile(){ document.getElementById('image').click(); }
+        function handleFile(e){
+            const f = e.files[0];
+            if(!f) return;
+            const url = URL.createObjectURL(f);
+            const img = document.getElementById('preview-img');
+            img.src = url;
+            img.style.display = 'block';
+            document.getElementById('file-name').textContent = f.name;
+        }
+    </script>
+</head>
+<body>
+    <div class="wrap">
+        <div class="panel hero">
+            <h1>Plant Leaf Disease Detector</h1>
+            <p class="lead">Upload a clear leaf photo and the model will predict the likely disease and give guidance.</p>
+
+            <form class="upload" method="POST" enctype="multipart/form-data">
+                <label class="filebox">
+                    <div class="img-icon">IMG</div>
+                    <div class="file-info">
+                        <div id="file-name" class="muted">Choose an image or drag it here</div>
+                        <div class="file-sub muted">Max 5MB • JPG/PNG</div>
+                    </div>
+                    <input id="image" name="image" type="file" accept="image/*" onchange="handleFile(this)" required>
+                </label>
+
+                <button class="btn" type="submit">Predict</button>
+            </form>
+
+            {% if prediction %}
+                <div class="result-card">
+                    <div class="label">Prediction</div>
+                    <div class="prediction">{{ prediction }}</div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="panel">
+            <div class="label">Preview</div>
+            <div class="preview">
+                <img id="preview-img" src="{{ image_path if image_path else '' }}" class="{{ 'visible' if image_path else 'hidden' }}">
+            </div>
+
+            {% if image_path %}
+                <div class="preview-note muted">Uploaded image</div>
+            {% else %}
+                <div class="preview-note muted">No image selected yet</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
